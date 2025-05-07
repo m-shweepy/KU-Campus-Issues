@@ -1,0 +1,164 @@
+{% extends "layout.html" %}
+
+{% block title %}KU Campus Issues - Report and Track Campus Problems{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h1 class="mb-4">Campus Issues</h1>
+    </div>
+    <div class="col-lg-4 text-lg-end">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('post_issue') }}" class="btn btn-ku-primary">
+            <i class="fas fa-plus-circle"></i> Report New Issue
+        </a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-ku-primary">
+            <i class="fas fa-sign-in-alt"></i> Login to Report Issues
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="input-group">
+            <label class="input-group-text" for="status-filter">Status:</label>
+            <select class="form-select" id="status-filter">
+                <option value="all" {% if current_filter == 'all' %}selected{% endif %}>All Issues</option>
+                <option value="new" {% if current_filter == 'new' %}selected{% endif %}>New</option>
+                <option value="in progress" {% if current_filter == 'in progress' %}selected{% endif %}>In Progress</option>
+                <option value="resolved" {% if current_filter == 'resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group">
+            <label class="input-group-text" for="sort-by">Sort by:</label>
+            <select class="form-select" id="sort-by">
+                <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                <option value="most_likes" {% if current_sort == 'most_likes' %}selected{% endif %}>Most Likes</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+{% if issues.items %}
+    <div class="row">
+        {% for issue in issues.items %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 issue-card">
+                    {% if issue.image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + issue.image_filename) }}" 
+                             class="card-img-top issue-image" alt="{{ issue.title }}">
+                    {% else %}
+                        <div class="card-img-top text-center bg-secondary py-5">
+                            <i class="fas fa-image fa-4x text-light"></i>
+                            <p class="mt-2 text-light">No Image</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ issue.title }}</h5>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge {% if issue.status == 'new' %}badge-new{% elif issue.status == 'in progress' %}badge-in-progress{% else %}badge-resolved{% endif %}">
+                                {{ issue.status.capitalize() }}
+                            </span>
+                            <small class="text-muted">{{ issue.created_at.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        
+                        <p class="card-text">
+                            {{ issue.description[:100] }}{% if issue.description|length > 100 %}...{% endif %}
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt"></i> {{ issue.location }}
+                            </small>
+                        </p>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent border-top-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span>
+                                    <i class="fas fa-heart text-danger"></i> <span id="like-count-{{ issue.id }}">{{ issue.like_count }}</span> likes
+                                </span>
+                            </div>
+                            <a href="{{ url_for('issue_details', issue_id=issue.id) }}" class="btn btn-sm btn-outline-secondary">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if issues.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', page=issues.prev_num, status=current_filter, sort=current_sort) }}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-left"></i> Previous</span>
+                </li>
+            {% endif %}
+            
+            {% for page_num in issues.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == issues.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('index', page=page_num, status=current_filter, sort=current_sort) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if issues.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', page=issues.next_num, status=current_filter, sort=current_sort) }}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Next <i class="fas fa-chevron-right"></i></span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% else %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle fa-lg me-2"></i>
+        <h4>No issues found</h4>
+        <p class="mb-0">Be the first to report an issue on campus!</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('post_issue') }}" class="btn btn-ku-primary mt-3">
+                <i class="fas fa-plus-circle"></i> Report New Issue
+            </a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-ku-primary mt-3">
+                <i class="fas fa-sign-in-alt"></i> Login to Report Issues
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

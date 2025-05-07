@@ -1,0 +1,140 @@
+/* Custom styles for KU Campus Issues */
+
+/* Use CSS variables for consistent colors */
+:root {
+    --ku-primary: #512888;     /* KU purple */
+    --ku-secondary: #0051ba;   /* KU blue */
+    --ku-accent: #e8000d;      /* KU red */
+}
+
+/* Add some custom styling on top of Bootstrap */
+
+/* Card customizations */
+.issue-card {
+    transition: transform 0.2s ease;
+}
+
+.issue-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Status badges */
+.badge-new {
+    background-color: var(--ku-accent);
+    color: white;
+}
+
+.badge-in-progress {
+    background-color: var(--ku-secondary);
+    color: white;
+}
+
+.badge-resolved {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Custom button styling */
+.btn-ku-primary {
+    background-color: var(--ku-primary);
+    border-color: var(--ku-primary);
+    color: white;
+}
+
+.btn-ku-primary:hover {
+    background-color: #3e1f69;
+    border-color: #3e1f69;
+    color: white;
+}
+
+.btn-ku-secondary {
+    background-color: var(--ku-secondary);
+    border-color: var(--ku-secondary);
+    color: white;
+}
+
+.btn-ku-secondary:hover {
+    background-color: #004099;
+    border-color: #004099;
+    color: white;
+}
+
+/* Like button */
+.like-button {
+    cursor: pointer;
+}
+
+.like-button.liked {
+    color: var(--ku-accent);
+}
+
+/* Comment section */
+.comment {
+    border-left: 3px solid var(--ku-secondary);
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: var(--ku-secondary);
+}
+
+.comment-date {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Admin dashboard */
+.admin-stats {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.admin-stats h3 {
+    margin-bottom: 5px;
+}
+
+.admin-stats p {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.admin-issues {
+    margin-top: 20px;
+}
+
+/* Navbar customization */
+.navbar-brand img {
+    max-height: 40px;
+    margin-right: 10px;
+}
+
+/* Footer */
+.footer {
+    background-color: #212529;
+    color: white;
+    padding: 20px 0;
+    margin-top: 50px;
+}
+
+/* Image handling */
+.issue-image {
+    max-height: 300px;
+    object-fit: contain;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .issue-image {
+        max-height: 200px;
+    }
+    
+    .admin-stats {
+        margin-bottom: 10px;
+    }
+}
