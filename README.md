@@ -5,7 +5,6 @@ Campus Based Grievance webapp
 
 ### 📁 `CampusConnectPlatform/README.md`
 
-```markdown
 # Campus Connect Platform
 
 A college grievance reporting platform developed with Flask. Students can report infrastructure and academic issues, and view posts submitted by others in a centralized feed-style format.
@@ -46,9 +45,10 @@ python app.py
 
 # Run the app
 python app.py
+```
 Visit http://localhost:5000 to use the platform.
 
 📌 Author
 Alex Gonsalves, 
 www.linkedin.com/in/alex-gonsalves-379487214
- • GitHub
+ • https://github.com/m-shweepy/KU-Campus-Issues
